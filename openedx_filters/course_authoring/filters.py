@@ -23,3 +23,41 @@ class LMSPageURLRequested(OpenEdxPublicFilter):
         """
         data = super().run_pipeline(url=url, org=org)
         return data.get("url"), data.get("org")
+
+
+class OrganizationListRequested(OpenEdxPublicFilter):
+    """
+    Filter used to modify the organization list based on site-specific configuration.
+
+    Purpose:
+        This filter is triggered when course authoring MFE requests the organization list,
+        allowing the filter to modify the returned.
+
+    Filter Type:
+        org.openedx.content_authoring.organization.list.requested.v1
+
+    Trigger:
+        - Repository: openedx/edx-platform
+        - Path: cms/djangoapps/contentstore/views/organization.py
+        - Function or Method: OrganizationListView.get
+    """
+
+    filter_type = "org.openedx.content_authoring.organization.list.requested.v1"
+
+    @classmethod
+    def run_filter(cls, organizations: list, request=None) -> dict:
+        """
+        Process the organization list using configured pipeline steps.
+
+        Arguments:
+            organizations (list): List of all organizations from get_organizations()
+            request: Django request object for additional context
+
+        Returns:
+            data (dict): Dictionary containing filtered organizations and request contexts
+        """
+        data = super().run_pipeline(
+            organizations=organizations,
+            request=request
+        )
+        return data
