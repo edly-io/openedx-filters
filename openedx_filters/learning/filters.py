@@ -850,3 +850,27 @@ class ScheduleQuerySetRequested(OpenEdxPublicFilter):
         """
         data = super().run_pipeline(schedules=schedules)
         return data.get("schedules")
+
+
+class ResetPasswordRequested(OpenEdxPublicFilter):
+    """
+    Custom class used to create reset password filters and its custom methods.
+    """
+
+    filter_type = "org.openedx.learning.reset.password.requested.v1"
+
+    class PreventResetPassword(OpenEdxFilterException):
+        """
+        Custom class used to stop the reset password process.
+        """
+
+    @classmethod
+    def run_filter(cls, users):
+        """
+        Execute a filter with the signature specified.
+
+        Arguments:
+            users (QuerySet): is a Django QuerySet object.
+        """
+        data = super().run_pipeline(users=users)
+        return data.get("users")
